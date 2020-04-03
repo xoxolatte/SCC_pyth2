@@ -1,0 +1,251 @@
+@@ -1,203 +0,0 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <!-- Webpage Title -->
+  <title>향기주문서</title>
+
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <!-- 구글폰트 -->
+  <link href="https://fonts.googleapis.com/css?family=Noto+Serif+KR&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <!-- style -->
+
+  <script>
+
+    function order_made() {
+      let form1 = $('#name').val();
+      let form2 = $('#qyt').val();
+      let form3 = $('#address').val();
+      let form4 = $('#hp').val();
+
+      if (form1 == '') {
+        alert('이름을 입력하세요');
+        $('#name').focus();
+        // return form1.'#name'.focus(); 다른 형식 테스트
+
+      } else if (form2 == '') {
+        alert("수량을 선택하세요");
+        $('#qyt').focus();
+
+      } else if (form3 == '') {
+        alert("주소를 입력하세요");
+        $('#address').focus();
+
+      } else if (form4 == '') {
+        alert("전화번호를 입력하세요");
+        $('#hp').focus();
+
+      } else {
+        alert("주문이 완료되었습니다");
+      }
+    }
+
+    $.ajax({
+      type: "POST",
+      url: "/orders",
+      data: { name_give: name, qyt_give: qyt, address_give: address, hp_give: hp },
+      success: function (response) {
+        if (response['result'] == 'success') {
+          alert(response['msg']);
+          $('#name').val('');
+          $('#qyt').val('');
+          $('#address').val('');
+          $('#hp').val('');
+          window.location.reload();
+        }
+      }
+    })
+    
+
+
+    $(document).ready(function () {
+      $('#order_list').html('');
+      listing();
+    });
+
+    function listing() {
+      $.ajax({
+        type: "GET",
+        url: "/orders",
+        data: {},
+        success: function (response) {
+          if (response['result'] == 'success') {
+            let orders = response['orders'];
+            for (let i = 0; i < orders.length; i++) {
+              make_card(orders[i]['name'], orders[i]['qyt'], orders[i]['address'], orders[i]['hp']);
+            }
+          } else {
+            alert('주문을 받아오지 못했습니다');
+          }
+        }
+      })
+    }
+
+    function make_card(name, qyt, address, hp) {
+      let temp_html = '<tr>\
+                         <td>'+ name + '</td>\
+                         <td>'+ qyt + '</td>\
+                         <td>'+ address + '</td>\
+                         <td>'+ hp + '</td>\
+                         </tr>';
+      $('#order_list').append(temp_html);
+
+
+
+    }
+
+  </script>
+
+  <style type="text/css">
+    * {
+      font-family: 'Noto Serif KR', serif;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .wrap {
+      width: 590px;
+      margin: auto;
+    }
+
+    .title>h1 {
+      margin: 10px;
+      color: black;
+      font-size: 25px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .title>h5 {
+      margin: 5px 0 10px;
+      color: black;
+      font-size: 17px;
+      font-weight: normal;
+      text-align: right;
+    }
+
+    .contents>p {
+      margin: 7px 0 10px;
+      color: black;
+      font-size: 15px;
+      font-weight: lighter;
+      text-align: auto;
+    }
+
+    .intro {
+      margin: 10px;
+      color: rgb(99, 96, 96);
+      font-weight: bold;
+      text-align: 20rem;
+    }
+
+    .main-image {
+      margin: auto;
+      background-image: url('https://www.street.co.kr/wp-content/uploads/2019/06/QWE.jpg');
+      background-size: cover;
+      background-position: center;
+      width: 500px;
+      height: 300px;
+      border-radius: 10px;
+    }
+
+    .btn {
+      margin: 7px 260px 0 260px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="wrap">
+    <div class='main-image' id="product">
+    </div>
+    <div class="title">
+      <h1>기억을 팝니다</h1>
+      <h5>198,000원/75ml</h5>
+      <div class="contents">
+        <p class="text1">딥티크의 가장 아이코닉한 플로럴 향수를 네덜란드 사진가 바스뮤스의 정물화로 만나다.
+        </p>
+        <P class="text2">리미티드 에디션 패키지로 만나 볼 수 있는 그의 작품 속 꽃과 색상, 숨겨진 디테일들이 각 향수가 가진 후각적 세계와 스토리를 전달합니다. </P>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">주문자 이름</span>
+        </div>
+        <input type="text" class="form-control" id="name" placeholder="" aria-label="Username"
+          aria-describedby="basic-addon1">
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01">수량</label>
+        </div>
+        <select class="custom-select" id="qyt">
+          <option selected>--수량을 선택하세요--</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">주소</span>
+        </div>
+        <input type="text" class="form-control" id="address" aria-describedby="basic-addon3">
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">연락처</span>
+        </div>
+        <input type="text" class="form-control" id="hp" aria-describedby="basic-addon3">
+      </div>
+
+      <div class='order'>
+        <button onclick="order_made()" type="button" class="btn btn-primary">주문하기</button>
+      </div>
+
+      <p></p>
+      <div>
+        <table class="table" styel:c>
+          <tbody>
+            <tr>
+              <th>이름</th>
+              <th>수량</th>
+              <th>주소</th>
+              <th>전화번호</th>
+            </tr>
+          </tbody>
+          <tbody class="table" id="order_list">
+
+          </tbody>
+
+        </table>
+
+        </tbody>
+        </table>
+      </div>
+    </div>
+</body>
+
+</html>
